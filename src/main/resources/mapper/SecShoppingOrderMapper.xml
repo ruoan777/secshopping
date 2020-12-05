@@ -48,7 +48,7 @@
           and so.user_phone = #{userPhone}
     </select>
 
-    <!--    这种映射也不知道为啥buwork， so.secshopping_id等注入不进去-->
+    <!--    这种映射也不知道为啥不work， so.secshopping_id等注入不进去-->
     <!--    <select id="findById" resultType="com.ruoan.secshopping.entity.SecShoppingOrder">-->
     <!--        select so.secshopping_id,-->
     <!--               so.money,-->

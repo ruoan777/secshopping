@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoan.secshopping.mapper.SecShoppingMapper">
+    <resultMap id="BaseResultMap" type="com.ruoan.secshopping.entity.SecShopping">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="secshopping_id" property="secShoppingId" jdbcType="BIGINT"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="image" property="image" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="cost_price" property="costPrice" jdbcType="DECIMAL"/>
+        <result column="stock_count" property="stockCount" jdbcType="BIGINT"/>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <update id="reduceStock">
+        update sec_shopping
+        set stock_count = stock_count - 1
+        where secshopping_id = #{secShoppingId}
+          and start_time &lt;= #{killTime}
+          and end_time &gt;= #{killTime}
+          and stock_count &gt; 0
+    </update>
+</mapper>

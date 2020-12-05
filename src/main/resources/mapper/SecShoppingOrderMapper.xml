@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoan.secshopping.mapper.SecShoppingOrderMapper">
+    <resultMap id="BaseResultMap" type="com.ruoan.secshopping.entity.SecShoppingOrder">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="secshopping_id" property="secShoppingId" jdbcType="BIGINT"/>
+        <id column="user_phone" property="userPhone" jdbcType="BIGINT"/>
+        <result column="money" property="money" jdbcType="DECIMAL"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="state" property="state" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <resultMap id="QueryForListMap" type="com.ruoan.secshopping.entity.SecShoppingOrder">
+        <id column="secshopping_id" property="secShoppingId" jdbcType="BIGINT"/>
+        <id column="user_phone" property="userPhone" jdbcType="BIGINT"/>
+        <result column="money" property="money" jdbcType="DECIMAL"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="state" property="state" jdbcType="TINYINT"/>
+        <collection property="secShopping" ofType="com.ruoan.secshopping.entity.SecShopping">
+            <id column="secshopping_id" property="secShoppingId" jdbcType="BIGINT"/>
+            <result column="title" property="title" jdbcType="VARCHAR"/>
+            <result column="image" property="image" jdbcType="VARCHAR"/>
+            <result column="price" property="price" jdbcType="DECIMAL"/>
+            <result column="cost_price" property="costPrice" jdbcType="DECIMAL"/>
+            <result column="stock_count" property="stockCount" jdbcType="BIGINT"/>
+            <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+            <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        </collection>
+    </resultMap>
+
+    <!-- 插入订单明细。如果主键冲突会直接报错，可使用`ignore`实现主键冲突就直接返回0，表示更新失败 -->
+    <insert id="insertSuccessOrdered">
+        insert ignore into sec_shopping_order(secshopping_id, user_phone, money)
+        values (#{secShoppingId}, #{userPhone}, #{money})
+    </insert>
+
+    <!-- 查询订单明细表并得到对应秒杀商品的数据
+        通过`s.xxx "sec_shopping.xxx"`的方式实现将查询到的sec_shopping表中的数据赋值给sec_shopping_order实体类中的secShopping属性上
+    -->
+    <select id="findById" resultMap="QueryForListMap">
+        select *
+        from sec_shopping_order so
+                     inner join sec_shopping s on so.secshopping_id = s.secshopping_id
+        where so.secshopping_id = #{secShoppingId}
+          and so.user_phone = #{userPhone}
+    </select>
+
+    <!--    这种映射也不知道为啥buwork， so.secshopping_id等注入不进去-->
+    <!--    <select id="findById" resultType="com.ruoan.secshopping.entity.SecShoppingOrder">-->
+    <!--        select so.secshopping_id,-->
+    <!--               so.money,-->
+    <!--               so.user_phone,-->
+    <!--               so.create_time,-->
+    <!--               so.state,-->
+    <!--               s.secshopping_id  as "secShopping.secShoppingId",-->
+    <!--               s.title           as "secShopping.title",-->
+    <!--               s.price           as "secShopping.price",-->
+    <!--               s.image           as "secShopping.image",-->
+    <!--               s.cost_price      as "secShopping.costPrice",-->
+    <!--               s.stock_count     as "secShopping.stockCount",-->
+    <!--               s.start_time      as "secShopping.startTime",-->
+    <!--               s.end_time        as "secShopping.endTime",-->
+    <!--               s.create_time     as "secShopping.createTime"-->
+    <!--        from sec_shopping_order so-->
+    <!--                     inner join sec_shopping s on so.secshopping_id = s.secshopping_id-->
+    <!--        where so.secshopping_id = #{secShoppingId}-->
+    <!--          and so.user_phone = #{userPhone}-->
+    <!--    </select>-->
+</mapper>
